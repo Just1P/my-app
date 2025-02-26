@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Image from 'next/image';
 
 // Interface pour un joueur favori
 export interface FavoritePlayer {
@@ -54,33 +55,39 @@ const Favorites: React.FC<FavoritesProps> = ({
     }
   }, []);
 
+  useEffect(() => {
+    if (currentGameName && currentTagLine && profileIconId) {
+      // Utiliser la forme de fonction pour setState, qui a accès à l'état actuel
+      setFavorites(prevFavorites => {
+        // Vérifier si le joueur existe déjà dans les favoris
+        const existingIndex = prevFavorites.findIndex(
+          f => f.gameName.toLowerCase() === currentGameName.toLowerCase() && 
+               f.tagLine.toLowerCase() === currentTagLine.toLowerCase()
+        );
+  
+        if (existingIndex >= 0) {
+          // Créer une nouvelle version du tableau avec la mise à jour
+          const updatedFavorites = [...prevFavorites];
+          updatedFavorites[existingIndex] = {
+            ...updatedFavorites[existingIndex],
+            lastSearched: Date.now(),
+            profileIconId
+          };
+          return updatedFavorites;
+        }
+        
+        // Retourner l'état inchangé si aucune modification n'est nécessaire
+        return prevFavorites;
+      });
+    }
+  }, [currentGameName, currentTagLine, profileIconId]);
+
   // Sauvegarder les favoris dans le localStorage quand ils changent
   useEffect(() => {
     localStorage.setItem("lol-favorites", JSON.stringify(favorites));
   }, [favorites]);
 
-  // Mettre à jour le dernier joueur recherché quand currentGameName et currentTagLine changent
-  useEffect(() => {
-    if (currentGameName && currentTagLine && profileIconId) {
-      // Vérifier si le joueur existe déjà dans les favoris
-      const existingIndex = favorites.findIndex(
-        (f) =>
-          f.gameName.toLowerCase() === currentGameName.toLowerCase() &&
-          f.tagLine.toLowerCase() === currentTagLine.toLowerCase()
-      );
 
-      if (existingIndex >= 0) {
-        // Mettre à jour le timestamp du joueur existant
-        const updatedFavorites = [...favorites];
-        updatedFavorites[existingIndex] = {
-          ...updatedFavorites[existingIndex],
-          lastSearched: Date.now(),
-          profileIconId,
-        };
-        setFavorites(updatedFavorites);
-      }
-    }
-  }, [currentGameName, currentTagLine, profileIconId, favorites]);
 
   // Ajouter un nouveau favori
   const addFavorite = () => {
@@ -235,44 +242,43 @@ const Favorites: React.FC<FavoritesProps> = ({
           {sortedFavorites.length > 0 ? (
             <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
               {sortedFavorites.map((player) => (
-                <div
-                  key={player.id}
-                  className="flex items-center justify-between bg-slate-800/50 hover:bg-slate-700/50 p-2 rounded-lg transition-colors"
-                >
-                  <div
-                    className="flex items-center flex-grow cursor-pointer"
-                    onClick={() =>
-                      onSelectPlayer(player.gameName, player.tagLine)
-                    }
-                  >
-                    {player.profileIconId ? (
-                      <img
-                        src={`https://ddragon.leagueoflegends.com/cdn/15.4.1/img/profileicon/${player.profileIconId}.png`}
-                        alt="Profile Icon"
-                        className="w-8 h-8 rounded-full mr-2"
-                      />
-                    ) : (
-                      <div className="w-8 h-8 bg-slate-700 rounded-full flex items-center justify-center mr-2">
-                        <User className="w-4 h-4 text-slate-400" />
-                      </div>
-                    )}
-                    <div>
-                      <div className="text-white font-medium">
-                        {player.gameName}
-                      </div>
-                      <div className="text-blue-300 text-xs">
-                        #{player.tagLine}
-                      </div>
-                    </div>
-                  </div>
-                  <button
-                    className="ml-2 p-1 text-slate-500 hover:text-red-400 rounded"
-                    onClick={() => removeFavorite(player.id)}
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
+  <div
+    key={player.id}
+    className="flex items-center justify-between bg-slate-800/50 hover:bg-slate-700/50 p-2 rounded-lg transition-colors"
+  >
+    <div
+      className="flex items-center flex-grow cursor-pointer"
+      onClick={() => onSelectPlayer(player.gameName, player.tagLine)}
+    >
+      {player.profileIconId ? (
+        <Image
+          src={`https://ddragon.leagueoflegends.com/cdn/15.4.1/img/profileicon/${player.profileIconId}.png`}
+          alt="Profile Icon"
+          className="w-8 h-8 rounded-full mr-2"
+          width={64}    
+          height={64} 
+        />
+      ) : (
+        <div className="w-8 h-8 bg-slate-700 rounded-full flex items-center justify-center mr-2">
+          <User className="w-4 h-4 text-slate-400" />
+        </div>
+      )}
+      <div>
+        <div className="text-white font-medium">{player.gameName}</div>
+        <div className="text-blue-300 text-xs">#{player.tagLine}</div>
+      </div>
+    </div>
+
+
+    <button
+      className="ml-2 p-1 text-slate-500 hover:text-red-400 rounded"
+      onClick={() => removeFavorite(player.id)}
+    >
+      <X className="w-4 h-4" />
+    </button>
+  </div>
+))}
+
             </div>
           ) : (
             <div className="text-center text-slate-500 py-2">

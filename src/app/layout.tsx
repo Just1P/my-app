@@ -1,6 +1,6 @@
 "use client";
 
-import type { Metadata } from "next";
+import React, { ReactNode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -14,21 +14,22 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState } from "react";
+interface RootLayoutProps {
+  children: ReactNode;
+}
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const [queryClient] = useState(() => new QueryClient());
-
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <html lang="fr">
-        <body>{children}</body>
-      </html>
-    </QueryClientProvider>
+    <html lang="fr" className={`${geistSans.variable} ${geistMono.variable}`}>
+      <head>
+        <title>Lol Project</title>
+        <meta name="description" content="Explorez vos performances sur les Failles de l'Invocateur" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+      </head>
+      <body className="bg-gradient-to-b from-blue-950 to-slate-950 text-white min-h-screen">
+        {children}
+      </body>
+    </html>
   );
 }

@@ -212,3 +212,36 @@ export type GetSummonerDataFunction = (
   gameName: string,
   tagLine: string
 ) => Promise<Summoner | null>;
+
+// Définir les types pour les données de performance
+export type ChartDataPoint = {
+  gameNumber: number;
+  championName: string;
+  kda: number;
+  csPerMinute: number;
+  visionScore: number;
+  damageShare: number;
+  win: number;
+  gameMode: number;
+  date: string;
+  kills: number;
+  deaths: number;
+  assists: number;
+  kdaAvg?: number;
+  csAvg?: number;
+  visionAvg?: number;
+}
+
+// Pour les modificateurs de tendance
+export type PhaseModifier  = {
+  xMod: number;
+  yMod: number;
+  wMod: number;
+}
+
+// Pour les points de heatmap
+export type HeatmapPoint = {
+  x: number;
+  y: number;
+  weight: number;
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { searchSummoners, getSummonerData } from "../lib/riotApi";
+import { getSummonerData } from "../lib/riotApi";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import TopChampions from "@/components/TopChampions";
@@ -9,6 +9,7 @@ import PerformanceCharts from "@/components/PerformanceCharts";
 import Favorites from "@/components/Favorites";
 import ProfileFavoriteButton from "@/components/ProfileFavoriteButton";
 import { Summoner, Match, Participant } from "../types/riotTypes";
+import Image from 'next/image';
 
 export default function Home() {
   const [gameName, setGameName] = useState<string>("");
@@ -19,6 +20,7 @@ export default function Home() {
   const [matchCount, setMatchCount] = useState<number>(10);
   const [selectedQueue, setSelectedQueue] = useState<string>("Tous");
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
+  const [favoritesChanged, setFavoritesChanged] = useState(0);
 
   // Mapping des queueId vers des noms de parties lisibles
   const queueTypes: Record<number, string> = {
@@ -133,15 +135,6 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-gradient-to-b from-blue-950 to-slate-950 text-white p-4">
-      {/* Header avec animation */}
-      <div className="w-full max-w-6xl mb-10 mt-4">
-        <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-teal-300 to-blue-500 text-center">
-          NEXUS STATS
-        </h1>
-        <p className="text-center text-blue-300 mt-2 opacity-80">
-          Explorez vos performances sur les Failles de l'Invocateur
-        </p>
-      </div>
 
       {/* Search Bar Redesigned */}
       <div className="w-full max-w-md p-6 bg-slate-900/70 backdrop-blur-md rounded-2xl shadow-xl mb-8 border border-blue-900/50">
@@ -213,16 +206,17 @@ export default function Home() {
 
         {/* Système de favoris */}
         <div className="mt-4">
-          <Favorites
-            onSelectPlayer={(name, tag) => {
-              setGameName(name);
-              setTagLine(tag);
-              handleSearch();
-            }}
-            currentGameName={summoner?.name}
-            currentTagLine={summoner?.tag}
-            profileIconId={summoner?.profileIconId}
-          />
+        <Favorites
+          onSelectPlayer={(name, tag) => {
+            setGameName(name);
+            setTagLine(tag);
+            handleSearch();
+          }}
+          currentGameName={summoner?.name}
+          currentTagLine={summoner?.tag}
+          profileIconId={summoner?.profileIconId}
+          key={`favorites-${favoritesChanged}`} // Forcer le rechargement quand ça change
+        />
         </div>
       </div>
 
@@ -290,10 +284,12 @@ export default function Home() {
                           >
                             <td className="py-2">
                               <div className="flex items-center">
-                                <img
+                                <Image
                                   src={`https://ddragon.leagueoflegends.com/cdn/15.4.1/img/champion/${player.championName}.png`}
                                   alt={player.championName}
                                   className="w-8 h-8 rounded-full mr-2"
+                                  width={64}    
+                                  height={64} 
                                 />
                                 <span className="text-xs truncate max-w-16">
                                   {player.championName}
@@ -388,10 +384,12 @@ export default function Home() {
                           >
                             <td className="py-2">
                               <div className="flex items-center">
-                                <img
+                                <Image
                                   src={`https://ddragon.leagueoflegends.com/cdn/15.4.1/img/champion/${player.championName}.png`}
                                   alt={player.championName}
                                   className="w-8 h-8 rounded-full mr-2"
+                                  width={64}    
+                                  height={64} 
                                 />
                                 <span className="text-xs truncate max-w-16">
                                   {player.championName}
@@ -576,17 +574,23 @@ export default function Home() {
             <div className="bg-slate-800/70 p-6 rounded-xl shadow-md flex flex-col items-center">
               <div className="relative">
                 <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 to-teal-400 blur-md opacity-70"></div>
-                <img
+                <Image
                   src={`https://ddragon.leagueoflegends.com/cdn/15.4.1/img/profileicon/${summoner.profileIconId}.png`}
                   alt="Icône d'invocateur"
                   className="relative w-24 h-24 rounded-full border-2 border-blue-400"
+                  width={64}    
+                  height={64} 
                 />
                 {/* Bouton Favoris */}
-                <ProfileFavoriteButton
-                  gameName={summoner.name}
-                  tagLine={summoner.tag}
-                  profileIconId={summoner.profileIconId}
-                />
+                {summoner && (
+  <ProfileFavoriteButton 
+    gameName={summoner.name} 
+    tagLine={summoner.tag} 
+    profileIconId={summoner.profileIconId} 
+  />
+)}
+
+
               </div>
               <div className="mt-4 text-center">
                 <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-teal-300">
@@ -693,10 +697,12 @@ export default function Home() {
 
                       <div className="flex items-center">
                         <div className="relative overflow-hidden rounded-lg w-20 h-20 mr-4">
-                          <img
+                          <Image
                             src={`https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${playerData.championName}_0.jpg`}
                             alt={playerData.championName}
                             className="w-full h-full object-cover"
+                            width={250}    
+                            height={250} 
                           />
                           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-1">
                             <p className="text-xs text-center font-medium text-white truncate">

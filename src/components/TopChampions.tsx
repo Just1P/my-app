@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Match, Participant } from "../types/riotTypes";
+import Image from "next/image";
 
 interface TopChampionsProps {
   matches: Match[];
@@ -116,10 +117,12 @@ const TopChampions: React.FC<TopChampionsProps> = ({
               className="flex items-center p-2 bg-slate-900/60 rounded-lg"
             >
               <div className="w-12 h-12 mr-3 overflow-hidden rounded-md">
-                <img
+                <Image
                   src={`https://ddragon.leagueoflegends.com/cdn/15.4.1/img/champion/${champion.championName}.png`}
                   alt={champion.championName}
                   className="w-full h-full object-cover"
+                  width={64}    
+                  height={64} 
                 />
               </div>
               <div>

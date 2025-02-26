@@ -11,7 +11,7 @@ import {
   BarChart,
   Bar,
 } from "recharts";
-import { Match, Participant } from "../types/riotTypes";
+import { ChartDataPoint, Match, Participant } from "../types/riotTypes";
 
 interface PerformanceChartsProps {
   matches: Match[];
@@ -147,7 +147,7 @@ const PerformanceCharts: React.FC<PerformanceChartsProps> = ({
   }
 
   // Calculer les tendances
-  const getPerformanceTrend = (data: any[], key: string) => {
+  const getPerformanceTrend = (data: ChartDataPoint[], key: keyof ChartDataPoint) => {
     if (data.length < 3) return "stable";
 
     const recentGames = data.slice(-5);
@@ -155,11 +155,18 @@ const PerformanceCharts: React.FC<PerformanceChartsProps> = ({
 
     if (recentGames.length && olderGames.length) {
       const recentAvg =
-        recentGames.reduce((acc, game) => acc + (game ? game[key] : 0), 0) /
-        recentGames.length;
+        recentGames.reduce((acc, game) => {
+          // Convertir explicitement en nombre pour garantir le type
+          const value = game && game[key] !== undefined ? Number(game[key]) : 0;
+          return acc + value;
+        }, 0) / recentGames.length;
+      
       const olderAvg =
-        olderGames.reduce((acc, game) => acc + (game ? game[key] : 0), 0) /
-        olderGames.length;
+        olderGames.reduce((acc, game) => {
+          // Même approche pour olderGames
+          const value = game && game[key] !== undefined ? Number(game[key]) : 0;
+          return acc + value;
+        }, 0) / olderGames.length;
 
       if (olderAvg === 0) return "stable"; // Éviter division par zéro
 
@@ -173,7 +180,7 @@ const PerformanceCharts: React.FC<PerformanceChartsProps> = ({
   };
 
   // Obtenir les tendances pour chaque statistique
-  const validChartData = chartData.filter(Boolean);
+  const validChartData: ChartDataPoint[] = chartData.filter((item): item is ChartDataPoint => Boolean(item));
   const kdaTrend = getPerformanceTrend(validChartData, "kda");
   const csTrend = getPerformanceTrend(validChartData, "csPerMinute");
   const visionTrend = getPerformanceTrend(validChartData, "visionScore");
@@ -637,7 +644,7 @@ const PerformanceCharts: React.FC<PerformanceChartsProps> = ({
       {/* Damage Share Chart */}
       <div className="bg-slate-800/50 p-4 rounded-xl mb-6">
         <h4 className="text-md font-semibold text-blue-300 mb-4">
-          Part des dégâts dans l'équipe (%)
+          Part des dégâts dans l&apos;équipe (%)
         </h4>
         <ResponsiveContainer width="100%" height={200}>
           <BarChart
