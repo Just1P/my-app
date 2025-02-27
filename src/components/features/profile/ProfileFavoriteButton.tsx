@@ -1,5 +1,8 @@
+// src/components/features/profile/ProfileFavoriteButton.tsx
+"use client";
+
 import { Heart } from "lucide-react";
-import { useFavorites } from "@/hooks/useFavorites";
+import { useFavorites } from "@/context/FavoritesContext";
 
 interface ProfileFavoriteButtonProps {
   gameName: string;
@@ -33,12 +36,22 @@ const ProfileFavoriteButton: React.FC<ProfileFavoriteButtonProps> = ({
           ? "bg-pink-600 hover:bg-pink-700"
           : "bg-slate-700 hover:bg-slate-600"
       }`}
-      aria-label={isFavorite(gameName, tagLine) ? "Retirer des favoris" : "Ajouter aux favoris"}
-      title={isFavorite(gameName, tagLine) ? "Retirer des favoris" : "Ajouter aux favoris"}
+      aria-label={
+        isFavorite(gameName, tagLine)
+          ? "Retirer des favoris"
+          : "Ajouter aux favoris"
+      }
+      title={
+        isFavorite(gameName, tagLine)
+          ? "Retirer des favoris"
+          : "Ajouter aux favoris"
+      }
     >
       <Heart
         className={`w-5 h-5 ${
-          isFavorite(gameName, tagLine) ? "text-white fill-current" : "text-slate-300"
+          isFavorite(gameName, tagLine)
+            ? "text-white fill-current"
+            : "text-slate-300"
         }`}
       />
     </button>

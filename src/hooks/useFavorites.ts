@@ -33,7 +33,11 @@ export function useFavorites() {
     );
   };
 
-  const addFavorite = (gameName: string, tagLine: string, profileIconId?: number) => {
+  const addFavorite = (
+    gameName: string,
+    tagLine: string,
+    profileIconId?: number
+  ) => {
     if (isFavorite(gameName, tagLine)) return;
 
     const newFavorite: FavoritePlayer = {
@@ -48,11 +52,13 @@ export function useFavorites() {
   };
 
   const removeFavorite = (gameName: string, tagLine: string) => {
-    setFavorites(favorites.filter(
-      (f) =>
-        f.gameName.toLowerCase() !== gameName.toLowerCase() ||
-        f.tagLine.toLowerCase() !== tagLine.toLowerCase()
-    ));
+    setFavorites(
+      favorites.filter(
+        (f) =>
+          f.gameName.toLowerCase() !== gameName.toLowerCase() ||
+          f.tagLine.toLowerCase() !== tagLine.toLowerCase()
+      )
+    );
   };
 
   return { favorites, isFavorite, addFavorite, removeFavorite };
