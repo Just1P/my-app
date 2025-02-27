@@ -13,8 +13,6 @@ import MatchDetails from "@/components/features/matches/MatchDetails";
 import { Summoner, Match } from "@/types/riotTypes";
 import { QUEUE_TYPES } from "@/lib/constants/gameConstants";
 import {
-  formatGameDuration,
-  formatGameDate,
   calculateKDA,
 } from "@/lib/utils/formatters";
 
@@ -30,7 +28,7 @@ interface SummonerPresentationProps {
   error: string;
   loading: boolean;
   matchCount: number;
-  setMatchCount: (value: number) => void;
+  setMatchCount: React.Dispatch<React.SetStateAction<number>>;
   selectedQueue: string;
   setSelectedQueue: (value: string) => void;
   selectedMatch: Match | null;
@@ -41,6 +39,9 @@ interface SummonerPresentationProps {
   calculateCsPerMin: (totalCs: number, gameDurationInSeconds: number) => string;
   viewMatchDetails: (match: Match) => void;
   closeMatchDetails: () => void;
+
+  championWinRateChart?: React.ReactNode;
+  virtualMatchList?: React.ReactNode;
 }
 
 export const SummonerPresentation: React.FC<SummonerPresentationProps> = ({

@@ -1,15 +1,15 @@
 // src/components/features/profile/EnhancedSummonerContainer.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState,} from "react";
 import { SummonerPresentation } from "./SummonerPresentation";
-import { Summoner, Match, Participant } from "@/types/riotTypes";
+import { Summoner, Match, Participant, MatchSummary } from "@/types/riotTypes";
 import { enhancedRiotService } from "@/lib/api/riotService";
 import { SummonerProfileSkeleton } from "@/components/ui/loading-skeleton";
-import AdvancedMatchFilter, { MatchFilterOptions } from "../matches/AdvancedMatchFilter";
+import AdvancedMatchFilter, { MatchFilterOptions } from "@/components/features/matches/AdvancedMatchFilter";
 import { useCallback } from "react";
 import { VirtualMatchList } from "../matches/VirtualMatchList";
-import ChampionWinRateChart from "../champions/ChampionWinRateChart";
+import ChampionWinRateChart from "@/components/features/champions/ChampionWinRateChart";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -158,19 +158,21 @@ export function SummonerContainer({ onProfileLoaded }: SummonerContainerProps) {
   };
   
   // Prepare data for the advanced filter if summoner is loaded
-  const filterData = summoner?.matches.map(match => {
+  const filterData: MatchSummary[] = summoner?.matches.map(match => {
     const player = match.info.participants.find(
       (p: Participant) => p.puuid === summoner.puuid
     );
     
-    return player ? {
+    if (!player) return null;
+    
+    return {
       queueId: match.info.queueId,
       championName: player.championName,
       win: player.win,
       gameCreation: match.info.gameCreation,
       teamPosition: player.teamPosition
-    } : null;
-  }).filter(Boolean) || [];
+    };
+  }).filter((item): item is MatchSummary => item !== null) || [];
 
   return (
     <>
@@ -196,9 +198,9 @@ export function SummonerContainer({ onProfileLoaded }: SummonerContainerProps) {
           
           {/* Advanced filters */}
           <AdvancedMatchFilter 
-            allMatches={filterData as any[]} 
-            onFilterChange={handleFilterChange} 
-          />
+  allMatches={filterData as MatchSummary[]} 
+  onFilterChange={handleFilterChange} 
+/>
           
           {/* Main presentation component */}
           <SummonerPresentation

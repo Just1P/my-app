@@ -253,3 +253,10 @@ export interface FavoritePlayer {
   lastSearched: number;
   profileIconId?: number;
 }
+export interface MatchSummary {
+  queueId: number;
+  championName: string;
+  win: boolean;
+  gameCreation: number;
+  teamPosition: string;
+}

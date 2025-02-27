@@ -1,11 +1,10 @@
 // src/components/features/matches/MatchDetails.tsx
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { QUEUE_TYPES } from "@/lib/constants/gameConstants";
-import { Match, Participant } from "@/types/riotTypes";
+import { Match} from "@/types/riotTypes";
 import {
   formatGameDuration,
   formatGameDate,

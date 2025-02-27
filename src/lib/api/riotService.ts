@@ -1,5 +1,5 @@
 // src/lib/api/enhancedRiotService.ts
-import { apiRequest, APIError } from "@/lib/api/baseApi";
+import { apiRequest } from "@/lib/api/baseApi";
 import { API_ROUTES } from "@/lib/constants/apiRoutes";
 import { cacheService, generateCacheKey } from "@/lib/utils/cacheService";
 import type { Summoner, Match } from "@/types/riotTypes";
