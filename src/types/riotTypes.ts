@@ -230,18 +230,26 @@ export type ChartDataPoint = {
   kdaAvg?: number;
   csAvg?: number;
   visionAvg?: number;
-}
+};
 
 // Pour les modificateurs de tendance
-export type PhaseModifier  = {
+export type PhaseModifier = {
   xMod: number;
   yMod: number;
   wMod: number;
-}
+};
 
 // Pour les points de heatmap
 export type HeatmapPoint = {
   x: number;
   y: number;
   weight: number;
+};
+
+export interface FavoritePlayer {
+  id: string;
+  gameName: string;
+  tagLine: string;
+  lastSearched: number;
+  profileIconId?: number;
 }
